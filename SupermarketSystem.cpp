@@ -3,7 +3,7 @@
 
 #pragma warning (disable: 4996)
 
-const unsigned MAX_BUFFER_SIZE = 1024;
+const unsigned MAX_BUFFER_SIZE = 256;
 
 const MyString& SupermarketSystem::getCurrentDate() const
 {
@@ -13,6 +13,18 @@ const MyString& SupermarketSystem::getCurrentDate() const
 	strftime(dateBuff, sizeof(dateBuff), "%Y-%m-%d %H:%M:%S", localTime);
 
 	return MyString(dateBuff);
+}
+
+int SupermarketSystem::findUserIndex(unsigned id) const
+{
+	for (size_t i = 0; i < userCount; i++)
+	{
+		if (users[i]->getId() == id) 
+		{
+			return i;
+		}
+	}
+	return -1;
 }
 
 void SupermarketSystem::resizeUsers(unsigned newCap)
@@ -141,6 +153,80 @@ void SupermarketSystem::logout()
 	std::cout << "You have logged out" << std::endl;
 }
 
+void SupermarketSystem::leave()
+{
+	if (!currentUser)
+	{
+		std::cout << "You have to log in to use this command";
+	}
+
+	unsigned userIndex = findUserIndex(currentUser->getId());
+	delete users[userIndex];
+	for (size_t i = userIndex; i < userCount - 1; i++)
+	{
+		users[i] = users[i + 1];
+	}
+	userCount--;
+	std::cout << "Successfuly left." << std::endl;
+	addFeed(currentUser->getFullName(), "has left.");
+	currentUser = nullptr;
+}
+
+void SupermarketSystem::registerUser(const char* input)
+{
+	char line[MAX_BUFFER_SIZE];
+	strcpy(line, input);
+
+	char* comm = strtok(line, " ");
+	if (!comm || strcmp(comm, "register") != 0)
+	{
+		std::cout << "Invalid command" << std::endl;
+		return;
+	}
+
+	char* role = strtok(nullptr, " ");
+	char* fn = strtok(nullptr, " ");
+	char* ln = strtok(nullptr, " ");
+	char* phone = strtok(nullptr, " ");
+	char* ageStr = strtok(nullptr, " ");
+	char* pass = strtok(nullptr, " ");
+
+	if (!role || !fn || !ln || !phone || !ageStr || !pass)
+	{
+		std::cout << "Invalid arguments" << std::endl;
+		return;
+	}
+
+	unsigned age = atoi(ageStr);
+
+	User* newUser = nullptr;
+	if (strcmp(role, "manager") == 0)
+	{
+		newUser = new Manager(MyString(fn), MyString(ln), MyString(phone), age, MyString(pass));
+		std::cout << "Manager registered successfully!" << std::endl;
+
+		Manager* manager = dynamic_cast<Manager*>(newUser);
+		std::cout << "Special code: " << manager->getSpecialCode().c_str() << std::endl;
+
+		MyString idStr;
+		idStr.to_string(manager->getId());
+		MyString fileName = idStr + "_special_code.txt";
+		std::cout << "Code: " << fileName.c_str() << std::endl;
+		addFeed(newUser->getFullName(), "Registered as a manager.");
+	}
+	else if(strcmp(role, "cashier") == 0)
+	{
+		newUser = new Cashier(MyString(fn), MyString(ln), MyString(phone), age, MyString(pass));
+		std::cout << "Cashier registration pending approval from a manager." << std::endl;
+		addFeed(newUser->getFullName(), "Registered as a cashier and waits for approval.");
+	}
+	else
+	{
+		std::cout << "Invalid role" << std::endl;
+		return;
+	}
+}
+
 void SupermarketSystem::listUserData() const
 {
 	if (!currentUser)
@@ -161,7 +247,7 @@ void SupermarketSystem::listWorkers() const
 	}
 	for (size_t i = 0; i < userCount; i++)
 	{
-		if (users[i]->getRole() == "Cashier" || users[i]->getRole() == "Manager")
+		if (users[i]->getRole() == "cashier" || users[i]->getRole() == "manager")
 		{
 			users[i]->printInfo();
 		}
@@ -244,15 +330,44 @@ void SupermarketSystem::listTransactions() const
 		transactions[i]->printInfo();
 	}
 }
+
+void SupermarketSystem::listPending() const
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < userCount; i++)
+	{
+		if (users[i]->getRole() == "cashier")
+		{
+			Cashier* cashier = dynamic_cast<Cashier*>(users[i]);
+			if (!cashier->checkIfApproved())
+			{
+				cashier->printInfo();
+			}
+		}
+		std::cout << "----------" << std::endl;
+	}
+}
+
 void SupermarketSystem::listWarnedCashiers(unsigned points) const
 {
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
 	std::cout << "Warned cashiers with over " << points << " points:" << std::endl;
 	for (size_t i = 0; i < userCount; i++)
 	{
-		if (users[i]->getRole() == "Cashier")
+		if (users[i]->getRole() == "cashier")
 		{
 			Cashier* cashier = dynamic_cast<Cashier*>(users[i]);
-			if (cashier->getWarningPoints() >= points)
+			if (cashier->getWarningPoints() >= points && cashier->checkIfApproved())
 			{
 				cashier->printInfo();
 			}
@@ -262,6 +377,12 @@ void SupermarketSystem::listWarnedCashiers(unsigned points) const
 
 void SupermarketSystem::loadProducts(const MyString& fileName)
 {
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
 	if (fileName == "")
 	{
 		std::cout << "Invalid file name" << std::endl;
@@ -302,7 +423,7 @@ void SupermarketSystem::loadProducts(const MyString& fileName)
 		}
 		else if (strcmp(type, "weight") == 0)
 		{
-			newProduct = new ProductByUnit(MyString(name), categoryId, price, quantity);
+			newProduct = new ProductByWeight(MyString(name), categoryId, price, quantity);
 		}
 		else
 		{
@@ -322,6 +443,12 @@ void SupermarketSystem::loadProducts(const MyString& fileName)
 
 void SupermarketSystem::loadGiftcards(const MyString& fileName)
 {
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
 	if (fileName == "")
 	{
 		std::cout << "Invalid file name" << std::endl;
@@ -380,38 +507,183 @@ void SupermarketSystem::loadGiftcards(const MyString& fileName)
 	addFeed(currentUser->getFullName(), "Loaded new gift cards to the system.");
 }
 
-void SupermarketSystem::warnCashier(const MyString& name)
+void SupermarketSystem::approveCashier(unsigned cashierId, const MyString& inputSpecialCode)
 {
-	if (currentUser->getRole() != "Manager")
+	if (!currentUser || currentUser->getRole() != "manager")
 	{
 		std::cout << "You don't have access to this command." << std::endl;
 		return;
 	}
 
-	for (size_t i = 0; i < userCount; i++)
+	unsigned userIndex = findUserIndex(cashierId);
+	if (userIndex < 0)
 	{
-		if (users[i]->getRole() == "Cashier" && users[i]->getFullName() == name)
+		std::cout << "Cashier not found or special code is wrong" << std::endl;
+		return;
+	}
+
+	Manager* manager = dynamic_cast<Manager*>(currentUser);
+	if (inputSpecialCode != manager->getSpecialCode())
+	{
+		std::cout << "Invalid special code" << std::endl;
+		return;
+	}
+
+	if (users[userIndex]->getRole() == "cashier")
+	{
+		Cashier* cashier = dynamic_cast<Cashier*>(users[userIndex]);
+		cashier->setApproval();
+		std::cout << "Approved cashier" << cashier->getId() << std::endl;
+		addFeed(currentUser->getFullName(), "Approved cashier" + cashier->getId());
+		
+		return;
+	}
+
+	std::cout << "User does not have a cashier role" << std::endl;
+}
+
+void SupermarketSystem::declineCashier(unsigned cashierId, const MyString& inputSpecialCode)
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	unsigned userIndex = findUserIndex(cashierId);
+	if (userIndex < 0)
+	{
+		std::cout << "Cashier not found" << std::endl;
+		return;
+	}
+
+	Manager* manager = dynamic_cast<Manager*>(currentUser);
+	if (inputSpecialCode != manager->getSpecialCode())
+	{
+		std::cout << "Invalid special code" << std::endl;
+		return;
+	}
+
+	if (users[userIndex]->getRole() == "cashier")
+	{
+		Cashier* cashier = dynamic_cast<Cashier*>(users[userIndex]);
+		if (cashier->checkIfApproved())
 		{
-			std::cout << "Warning description: " << std::endl;
-			char input[MAX_BUFFER_SIZE];
-			std::cin.ignore();
-			std::cin.getline(input, sizeof(input));
+			std::cout << "Cashier already approved. "
+				<< "Perhaps you want to try fire_cashier <cashier_id> <special_code>. " << std::endl;
+		}
 
+		delete users[userIndex];
+		for (size_t i = userIndex; i < userCount - 1; i++)
+		{
+			users[i] = users[i + 1];
+		}
+		userCount--;
+		std::cout << "Cashier declined" << std::endl;
+		addFeed(currentUser->getFullName(), "Declined cashier.");
+		return;
+	}
 
-			std::cout << "Warning severity points:" << std::endl;
-			unsigned points;
-			std::cin >> points;
+	std::cout << "User does not have a cashier role" << std::endl;
+}
 
-			Warning w(currentUser->getFullName(), MyString(input), points);
-			Cashier* cashier = dynamic_cast<Cashier*>(users[i]);
-			cashier->addWarning(w);
+void SupermarketSystem::warnCashier(unsigned cashierId)
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
 
-			std::cout << "Warning added" << std::endl;
-			addFeed(currentUser->getFullName(), "Warned cashier" + cashier->getFullName());
+	unsigned userIndex = findUserIndex(cashierId);
+	if (userIndex < 0)
+	{
+		std::cout << "Cashier not found" << std::endl;
+		return;
+	}
+
+	if (users[userIndex]->getRole() == "cashier")
+	{
+		std::cout << "Warning description: " << std::endl;
+		char input[MAX_BUFFER_SIZE];
+		std::cin.ignore();
+		std::cin.getline(input, sizeof(input));
+
+		std::cout << "Warning severity points:" << std::endl;
+		unsigned points;
+		std::cin >> points;
+
+		Warning w(currentUser->getFullName(), MyString(input), points);
+		Cashier* cashier = dynamic_cast<Cashier*>(users[userIndex]);
+
+		if (!cashier->checkIfApproved())
+		{
+			std::cout << "Cashier waits for approval, you can't add a warning" << std::endl;
 			return;
 		}
+
+		cashier->addWarning(w);
+
+		std::cout << "Warning added" << std::endl;
+		addFeed(currentUser->getFullName(), "Warned cashier" + cashier->getFullName());
+		return;
 	}
-	std::cout << "Cannot find cashier " << name << std::endl;
+
+	std::cout << "Cannot find cashier " << std::endl;
+}
+
+void SupermarketSystem::promoteCashier(unsigned cashierId, const MyString& inputSpecialCode)
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+	unsigned userIndex = findUserIndex(cashierId);
+	if (userIndex < 0)
+	{
+		std::cout << "Cashier not found" << std::endl;
+		return;
+	}
+
+	Cashier* cashier = dynamic_cast<Cashier*>(users[userIndex]);
+	if (!cashier)
+	{
+		std::cout << "User is not a cashier" << std::endl;
+		return;
+	}
+
+	Manager* newManager = new Manager(MyString(cashier->getFirstName()), MyString(cashier->getLastName()),
+		MyString(cashier->getPhoneNumber()), cashier->getAge(), MyString(cashier->getPass()));
+	delete users[userIndex];
+	users[userIndex] = newManager;
+	std::cout << "Cashier " << newManager->getFullName() << "promoted." << std::endl;
+	addFeed(currentUser->getFullName(), "Promoted " + newManager->getFullName());
+}
+
+void SupermarketSystem::fireCashier(unsigned cashierId, const MyString& inputSpecialCode)
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	unsigned userIndex = findUserIndex(cashierId);
+	if (userIndex < 0)
+	{
+		std::cout << "Cashier not found" << std::endl;
+		return;
+	}
+
+	delete users[userIndex];
+	for (size_t i = userIndex; i < userCount - 1; i++)
+	{
+		users[i] = users[i + 1];
+	}
+	userCount--;
+	std::cout << "Cashier fired" << std::endl;
+	addFeed(currentUser->getFullName(), "Fired cashier");
 }
 
 void SupermarketSystem::sell()
@@ -419,6 +691,13 @@ void SupermarketSystem::sell()
 	if (!currentUser || currentUser->getRole() != "Cashier")
 	{
 		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	Cashier* cashier = dynamic_cast<Cashier*>(currentUser);
+	if (!cashier || !cashier->checkIfApproved())
+	{
+		std::cout << "Invalid cashier or not approved" << std::endl;
 		return;
 	}
 
@@ -482,14 +761,10 @@ void SupermarketSystem::sell()
 
 	transaction->printReceipt();
 
-	Cashier* cashier = dynamic_cast<Cashier*>(currentUser);
-	if (cashier)
+	cashier->addTransaction();
+	if (cashier->getTransactionCount() % 3 == 0)
 	{
-		cashier->addTransaction();
-		if (cashier->getTransactionCount() % 3 == 0)
-		{
 			cashier->removeOldestWarning();
-		}
 	}
 	addFeed(currentUser->getFullName(), "Assisted a purchase");
 }
@@ -514,3 +789,145 @@ void SupermarketSystem::addFeed(const MyString& author, const MyString& descript
 	feed[feedCount++] = new Feed(author, description, date);
 }
 
+void SupermarketSystem::addCategory(const MyString& name, const MyString& description)
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < categoryCount; i++)
+	{
+		if (categories[i]->getName() == name) 
+		{
+			std::cout << "Category already exists" << std::endl;
+			return;
+		}
+	}
+
+	if (categoryCount >= categoryCapacity)
+	{
+		resizeCategories(categoryCount * 2);
+	}
+
+	categories[categoryCount++] = new Category(name, description);
+	std::cout << "Category added" << std::endl;
+	addFeed(currentUser->getFullName(), "Added new category: " + name);
+}
+void SupermarketSystem::deleteCategory(unsigned categoryId) 
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < categoryCount; i++)
+	{
+		if (categories[i]->getId()==categoryId)
+		{
+			delete categories[i];
+			for (size_t j = i; j < categoryCount - 1; j++)
+			{
+				categories[j] = categories[j + 1];
+			}
+			categoryCount--;
+			std::cout << "Category removed" << std::endl;
+			addFeed(currentUser->getFullName(), "Deleted category");
+			return;
+		}
+	}
+	std::cout << "No such category exists" << std::endl;
+}
+void SupermarketSystem::addProduct(const MyString& type) 
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	char input[MAX_BUFFER_SIZE];
+	MyString name, categoryName;
+	double price = 0;
+	double quantity = 0;
+
+	std::cout << "Enter product name: ";
+	std::cin >> input;
+	name = input;
+
+	std::cout << "Enter product category: ";
+	std::cin >> input;
+	categoryName = input;
+	
+	unsigned categoryIndex = -1;
+	for (size_t i = 0; i < categoryCount; i++)
+	{
+		if (categories[i]->getName() == categoryName)
+		{
+			categoryIndex = i;
+		}
+	}
+
+	if (categoryIndex <= 0)
+	{
+		std::cout << "Invalid category" << std::endl;
+		return;
+	}
+
+	std::cout << "Enter price: \n";
+	std::cin >> price;
+
+	std::cout << "Enter quantity: \n";
+	std::cin >> quantity;
+
+	if (prodcutCount >= productCapacity) {
+		resizeProducts(prodcutCount * 2);
+	}
+
+	Product* newProduct = nullptr;
+	if (type == "unit") 
+	{
+		newProduct = new ProductByUnit(name, price, categories[categoryIndex]->getId(), quantity);
+	}
+	else if (type == "weight")
+	{
+		newProduct = new ProductByWeight(name, price, categories[categoryIndex]->getId(), quantity);
+	}
+	else 
+	{
+		std::cout << "Invalid product type.\n";
+		return;
+	}
+
+	products[prodcutCount++] = newProduct;
+	std::cout << "Product " << newProduct->getName().c_str() << "added. \n";
+
+	addFeed(currentUser->getFullName(), "Added new product: " + name);
+}
+void SupermarketSystem::deleteProduct(unsigned productId) 
+{
+	if (!currentUser || currentUser->getRole() != "manager")
+	{
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < prodcutCount; ++i)
+	{
+		if (products[i]->getId() == productId)
+		{
+			delete products[i];
+			for (size_t j = i; j < prodcutCount - 1; j++)
+			{
+				products[j] = products[j + 1];
+			}
+			prodcutCount--;
+			std::cout << "Product removed" << std::endl;
+			addFeed(currentUser->getFullName(), "Deleted product");
+			return;
+		}
+	}
+	std::cout << "Product not found" << std::endl;
+}

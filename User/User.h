@@ -18,7 +18,7 @@ protected:
 	void free();
 
 public:
-	User(const unsigned id, const MyString& fn, const MyString& ln, const MyString& phoneNum, const unsigned age, const MyString& pass);
+	User(const MyString& fn, const MyString& ln, const MyString& phoneNum, const unsigned age, const MyString& pass);
 
 	User(const User& other);
 	User& operator=(const User& other);
@@ -26,6 +26,8 @@ public:
 	virtual ~User();
 
 	const unsigned getId() const;
+	const MyString& getFirstName() const;
+	const MyString& getLastName() const;
 	const MyString& getFullName() const;
 	const MyString& getPhoneNumber() const;
 	const unsigned getAge() const;

@@ -57,7 +57,7 @@ const MyString& Manager::getSpecialCode() const
 
 const MyString& Manager::getRole() const
 {
-	return "Manager";
+	return "manager";
 }
 
 void Manager::printInfo() const

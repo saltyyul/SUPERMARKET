@@ -62,8 +62,11 @@ public:
 
 	void login(unsigned id, const MyString& password);
 	void logout();
+	void leave();
+	void registerUser(const char* input);
 
 	const MyString& getCurrentDate() const;
+	int findUserIndex(unsigned id) const;
 
 	void listUserData() const;
 	void listWorkers() const;
@@ -71,13 +74,23 @@ public:
 	void listProductsByCategory(const unsigned categoryId) const;
 	void listFeed() const;
 	void listTransactions() const;
+	void listPending() const;
 	void listWarnedCashiers(unsigned points) const;
 
 	void loadProducts(const MyString& fileName);
 	void loadGiftcards(const MyString& fileName);
 
-	void warnCashier(const MyString& name);
+	void approveCashier(unsigned cashierId, const MyString& inputSpecialCode);
+	void declineCashier(unsigned cashierId, const MyString& inputSpecialCode);
+	void warnCashier(unsigned cashierId);
+	void promoteCashier(unsigned cashierId, const MyString& inputSpecialCode);
+	void fireCashier(unsigned cashierId, const MyString& inputSpecialCode);
+
 	void sell();
 	void addTransaction(Transaction* transaction);
 	void addFeed(const MyString& author, const MyString& description);
+	void addCategory(const MyString& name, const MyString& description);
+	void deleteCategory(unsigned categoryId);
+	void addProduct(const MyString& type);
+	void deleteProduct(unsigned productId);
 };

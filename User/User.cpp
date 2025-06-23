@@ -25,7 +25,7 @@ void User::free()
 { 
 }
 
-User::User(const unsigned id, const MyString& fn, const MyString& ln,
+User::User(const MyString& fn, const MyString& ln,
 	const MyString& phoneNum, const unsigned age, const MyString& pass)
 {
 	setName(fn, ln);
@@ -55,6 +55,10 @@ User::~User()
 }
 
 const unsigned User::getId() const { return id; }
+
+const MyString& User::getFirstName() const { return firstName; }
+
+const MyString& User::getLastName() const { return lastName; }
 
 const MyString& User::getFullName() const { return firstName + " " + lastName; }
 

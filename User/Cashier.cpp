@@ -8,6 +8,7 @@ void Cashier::copyFrom(const Cashier& other)
 	transactionCount = other.transactionCount;
 	warningCount = other.warningCount;
 	warningCapacity = other.warningCapacity;
+	approved = other.approved;
 
 	warnings = new Warning[warningCapacity]{};
 	for (size_t i = 0; i < warningCount; i++)
@@ -21,6 +22,7 @@ void Cashier::free()
 	warnings = nullptr;
 	warningCount = 0;
 	warningCapacity = 0;
+	approved = false;
 }
 void Cashier::resize(size_t newCap)
 {
@@ -39,7 +41,9 @@ void Cashier::resize(size_t newCap)
 Cashier::Cashier(const MyString& fn, const MyString& ln, const MyString& phoneNum,
 	const unsigned age, const MyString& pass)
 	:User(generateId(), fn, ln, phoneNum, age, pass)
-{}
+{
+	approved = false;
+}
 
 Cashier::Cashier(const Cashier& other):User(other)
 {
@@ -77,12 +81,28 @@ void Cashier::printInfo() const
 
 const MyString& Cashier::getRole() const
 {
-	return "Cashier";
+	return "cashier";
 }
 
 int Cashier::getTransactionCount() const
 {
 	return transactionCount;
+}
+
+int Cashier::getWarningPoints() const
+{
+	int sum = 0;
+	for (size_t i = 0; i < warningCount; i++)
+	{
+		sum += warnings[i].getPoints();
+	}
+
+	return sum;
+}
+
+bool Cashier::checkIfApproved() const
+{
+	return approved;
 }
 
 void Cashier::addWarning(const Warning& warning)
@@ -107,13 +127,8 @@ void Cashier::removeOldestWarning()
 	}
 	warningCount--;
 }
-int Cashier::getWarningPoints() const
-{
-	int sum = 0;
-	for (size_t i = 0; i < warningCount; i++)
-	{
-		sum += warnings[i].getPoints();
-	}
 
-	return sum;
+void Cashier::setApproval()
+{
+	this->approved = true;
 }
