@@ -138,6 +138,7 @@
     <ClInclude Include="Product\ProductByUnit.h" />
     <ClInclude Include="Product\ProductByWeight.h" />
     <ClInclude Include="SupermarketSystem.h" />
+    <ClInclude Include="Transaction.h" />
     <ClInclude Include="User\Cashier.h" />
     <ClInclude Include="User\Manager.h" />
     <ClInclude Include="User\User.h" />
@@ -149,6 +150,7 @@
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="Product\Product.cpp" />
     <ClCompile Include="SupermarketSystem.cpp" />
+    <ClCompile Include="Transaction.cpp" />
     <ClCompile Include="User\Cashier.cpp" />
     <ClCompile Include="User\Manager.cpp" />
     <ClCompile Include="User\User.cpp" />

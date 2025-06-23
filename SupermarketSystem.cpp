@@ -5,165 +5,14 @@
 
 const unsigned MAX_BUFFER_SIZE = 1024;
 
-struct SupermarketSystem::Transaction
+const MyString& SupermarketSystem::getCurrentDate() const
 {
-	unsigned id;
-	MyString name;
-	unsigned categoryId;
-	double price;
-	double quantity;
-	double total;
-
-	Transaction() = default;
-
-	Transaction(unsigned id, const MyString& name, unsigned categoryId,
-		double price, double quantity)
-		:id(id), name(name), categoryId(categoryId), price(price), quantity(quantity)
-	{
-		total = price * quantity;
-	}
-};
-
-void SupermarketSystem::writeReceipt(unsigned cashierId, const Transaction* items, size_t count, double totalSum)
-{
-	const char* idStr = MyString::to_string(nextTransactionId);
-	char fileName[MAX_BUFFER_SIZE];
-	strcpy(fileName, "receipt_");
-	strcat(fileName, idStr);
-	strcat(fileName, ".txt");
-
-	std::ofstream ofs(fileName);
-	if (!ofs.is_open())
-	{
-		std::cout << "Cannot open file" << std::endl;
-		return;
-	}
-
 	time_t curr = time(0);
 	tm* localTime = localtime(&curr);
 	char dateBuff[MAX_BUFFER_SIZE];
 	strftime(dateBuff, sizeof(dateBuff), "%Y-%m-%d %H:%M:%S", localTime);
-	ofs << "RECEIPT \n";
-	ofs << "TRANSACTION_ID: " << nextTransactionId << "\n";
 
-	if (!currentUser || currentUser->getId()!=cashierId)
-	{
-		std::cout << "Invalid user" << std::endl;
-		return;
-	}
-
-	const char* cashierIdStr = MyString::to_string(cashierId);
-	ofs << "CASHIER_ID: " << cashierIdStr << "\n";
-	ofs << dateBuff << "\n";
-	ofs << "-------------------------\n";
-
-	for (size_t i = 0; i < count; i++)
-	{
-		ofs << items[i].name.c_str() << "\n";
-		ofs << items[i].quantity << "*" << items[i].price << " - " << items[i].total << "\n";
-		ofs << "###\n";
-	}
-
-	ofs << "TOTAL: " << totalSum << "\n";
-	ofs.close();
-}
-
-void SupermarketSystem::sell()
-{
-	if (!currentUser || currentUser->getRole() != "Cashier")
-	{
-		std::cout << "You don't have access to this command." << std::endl;
-		return;
-	}
-
-	size_t itemCount = 0;
-	size_t itemCapacity = 0;
-	Transaction* items = new Transaction[itemCapacity];
-	double totalSum = 0;
-
-	char input[MAX_BUFFER_SIZE];
-	while (true)
-	{
-		std::cout << "Enter product ID to sell. Enter END to end the transaction: " << std::endl;
-		std::cin >> input;
-
-		if (strcmp(input, "end") == 0) break;
-		unsigned id = atoi(input);
-
-		Product* product = nullptr;
-		for (size_t i = 0; i < prodcutCount; i++)
-		{
-			if (products[i]->getId() == id)
-			{
-				product = products[i];
-				break;
-			}
-		}
-
-		if (!product)
-		{
-			std::cout << "Invalid product" << std::endl;
-			return;
-		}
-
-		std::cout << "Enter quantity: " << std::endl;
-		double quantity;
-		std::cin >> quantity;
-		if (!product->sell(quantity))
-		{
-			continue;
-		}
-
-		if (itemCount >= itemCapacity)
-		{
-			itemCapacity = itemCount * 2;
-			Transaction* newItems = new Transaction[itemCapacity];
-			for (size_t i = 0; i < itemCount; i++)
-			{
-				newItems[i] = items[i];
-			}
-			delete[] items;
-			items = newItems;
-		}
-
-		items[itemCount++] = Transaction(product->getId(), product->getName(), 
-			product->getCategoryId(), product->getPrice(), quantity);
-		totalSum += items[itemCount - 1].total;
-	}
-
-	std::cout << "Add voucher: (Y/N) ?" << std::endl;
-	std::cin >> input;
-	if (strcmp(input, "y") == 0)
-	{
-		std::cout << "Enter voucher:" << std::endl;
-		std::cin >> input;
-
-		for (size_t i = 0; i < giftCount; i++)
-		{
-			if (strcmp(giftcards[i]->getCode().c_str(), input) == 0) 
-			{
-				totalSum -= giftcards[i]->getDiscountValue();
-				if (totalSum < 0) totalSum = 0;
-				std::cout << "Discount applied!" << std::endl;
-				break;
-			}
-		}
-	}
-	std::cout << "Transaction complete!" << std::endl;
-
-	writeReceipt(currentUser->getId(), items, itemCount, totalSum);
-	nextTransactionId++;
-	delete[] items;
-
-	Cashier* cashier = dynamic_cast<Cashier*>(currentUser);
-	if (cashier)
-	{
-		cashier->addTransaction();
-		if (cashier->getTransactionCount() % 3 == 0)
-		{
-			cashier->removeOldestWarning();
-		}
-	}
+	return MyString(dateBuff);
 }
 
 void SupermarketSystem::resizeUsers(unsigned newCap)
@@ -176,7 +25,7 @@ void SupermarketSystem::resizeUsers(unsigned newCap)
 	}
 
 	delete[] users;
-	newUsers = users;
+	users = newUsers;
 
 	userCapacity = newCap;
 }
@@ -191,7 +40,7 @@ void SupermarketSystem::resizeCategories(unsigned newCap)
 	}
 
 	delete[] categories;
-	newCategories = categories;
+	categories = newCategories;
 
 	categoryCapacity = newCap;
 }
@@ -206,7 +55,7 @@ void SupermarketSystem::resizeProducts(unsigned newCap)
 	}
 
 	delete[] products;
-	newProducts = products;
+	products = newProducts;
 
 	productCapacity = newCap;
 }
@@ -221,9 +70,39 @@ void SupermarketSystem::resizeGiftcards(unsigned newCap)
 	}
 
 	delete[] giftcards;
-	newGiftcards = giftcards;
+	giftcards = newGiftcards;
 
 	giftCapacity = newCap;
+}
+
+void SupermarketSystem::resizeTransactions(unsigned newCap)
+{
+	Transaction** newTransactions = new Transaction * [newCap] {};
+
+	for (size_t i = 0; i < tranCount; i++)
+	{
+		newTransactions[i] = transactions[i];
+	}
+
+	delete[]  transactions;
+	transactions = newTransactions;
+
+	tranCapacity = newCap;
+}
+
+void SupermarketSystem::resizeFeed(unsigned newCap)
+{
+	Feed** newFeed = new Feed * [newCap] {};
+
+	for (size_t i = 0; i < feedCount; i++)
+	{
+		newFeed[i] = feed[i];
+	}
+
+	delete[] feed;
+	feed = newFeed;
+
+	feedCapacity = newCap;
 }
 
 SupermarketSystem::SupermarketSystem()
@@ -338,6 +217,49 @@ void SupermarketSystem::listProductsByCategory(const unsigned categoryId) const
 	}
 }
 
+void SupermarketSystem::listFeed() const
+{
+	if (feedCount == 0)
+	{
+		std::cout << "Feed is empty" << std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < feedCount; i++)
+	{
+		feed[i]->printFeedInfo();
+	}
+}
+
+void SupermarketSystem::listTransactions() const
+{
+	if (tranCount < 0)
+	{
+		std::cout << "No transactions" << std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < tranCount; i++)
+	{
+		transactions[i]->printInfo();
+	}
+}
+void SupermarketSystem::listWarnedCashiers(unsigned points) const
+{
+	std::cout << "Warned cashiers with over " << points << " points:" << std::endl;
+	for (size_t i = 0; i < userCount; i++)
+	{
+		if (users[i]->getRole() == "Cashier")
+		{
+			Cashier* cashier = dynamic_cast<Cashier*>(users[i]);
+			if (cashier->getWarningPoints() >= points)
+			{
+				cashier->printInfo();
+			}
+		}
+	}
+}
+
 void SupermarketSystem::loadProducts(const MyString& fileName)
 {
 	if (fileName == "")
@@ -394,6 +316,8 @@ void SupermarketSystem::loadProducts(const MyString& fileName)
 		products[prodcutCount++] = newProduct;
 	}
 	ifs.close();
+
+	addFeed(currentUser->getFullName(), "Loaded new products to the system.");
 }
 
 void SupermarketSystem::loadGiftcards(const MyString& fileName)
@@ -452,6 +376,8 @@ void SupermarketSystem::loadGiftcards(const MyString& fileName)
 		giftcards[giftCount++] = newGift;
 	}
 	ifs.close();
+
+	addFeed(currentUser->getFullName(), "Loaded new gift cards to the system.");
 }
 
 void SupermarketSystem::warnCashier(const MyString& name)
@@ -481,24 +407,110 @@ void SupermarketSystem::warnCashier(const MyString& name)
 			cashier->addWarning(w);
 
 			std::cout << "Warning added" << std::endl;
+			addFeed(currentUser->getFullName(), "Warned cashier" + cashier->getFullName());
 			return;
 		}
 	}
 	std::cout << "Cannot find cashier " << name << std::endl;
 }
 
-void SupermarketSystem::listWarnedCashiers(unsigned points) const
+void SupermarketSystem::sell()
 {
-	std::cout << "Warned cashiers with over "<< points <<" points:" << std::endl;
-	for (size_t i = 0; i < userCount; i++)
+	if (!currentUser || currentUser->getRole() != "Cashier")
 	{
-		if (users[i]->getRole() == "Cashier")
+		std::cout << "You don't have access to this command." << std::endl;
+		return;
+	}
+
+	MyString date = getCurrentDate();
+	Transaction* transaction = new Transaction(currentUser->getId(), date);
+
+	char input[MAX_BUFFER_SIZE];
+	while (true)
+	{
+		std::cout << "Enter product ID to sell. Enter END to end the transaction: " << std::endl;
+		std::cin >> input;
+
+		if (strcmp(input, "end") == 0) break;
+		unsigned id = atoi(input);
+
+		Product* product = nullptr;
+		for (size_t i = 0; i < prodcutCount; i++)
 		{
-			Cashier* cashier = dynamic_cast<Cashier*>(users[i]);
-			if (cashier->getWarningPoints() >= points)
+			if (products[i]->getId() == id)
 			{
-				cashier->printInfo();
+				product = products[i];
+				break;
+			}
+		}
+
+		if (!product)
+		{
+			std::cout << "Invalid product" << std::endl;
+			return;
+		}
+
+		std::cout << "Enter quantity: " << std::endl;
+		double quantity;
+		std::cin >> quantity;
+		if (!product->sell(quantity))
+		{
+			continue;
+		}
+
+		transaction->addProduct(product, quantity);
+	}
+
+	std::cout << "Add voucher: (Y/N) ?" << std::endl;
+	std::cin >> input;
+	if (strcmp(input, "y") == 0)
+	{
+		std::cout << "Enter voucher:" << std::endl;
+		std::cin >> input;
+
+		for (size_t i = 0; i < giftCount; i++)
+		{
+			if (strcmp(giftcards[i]->getCode().c_str(), input) == 0)
+			{
+				transaction->applyDiscount(giftcards[i]->getDiscountValue());
+				std::cout << "Discount applied!" << std::endl;
+				break;
 			}
 		}
 	}
+	std::cout << "Transaction complete!" << std::endl;
+
+	transaction->printReceipt();
+
+	Cashier* cashier = dynamic_cast<Cashier*>(currentUser);
+	if (cashier)
+	{
+		cashier->addTransaction();
+		if (cashier->getTransactionCount() % 3 == 0)
+		{
+			cashier->removeOldestWarning();
+		}
+	}
+	addFeed(currentUser->getFullName(), "Assisted a purchase");
 }
+
+void SupermarketSystem::addTransaction(Transaction* transaction)
+{
+	if (tranCount >= tranCapacity)
+	{
+		resizeTransactions(tranCount * 2);
+	}
+	transactions[tranCount++] = transaction;
+}
+
+void SupermarketSystem::addFeed(const MyString& author, const MyString& description)
+{
+	if (feedCount >= feedCapacity)
+	{
+		resizeFeed(feedCount * 2);
+	}
+
+	MyString date = getCurrentDate();
+	feed[feedCount++] = new Feed(author, description, date);
+}
+

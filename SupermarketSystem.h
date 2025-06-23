@@ -15,6 +15,7 @@
 #include "Giftcards/SingleCategoryGiftcard.h"
 #include "Warning.h"
 #include "Feed.h"
+#include "Transaction.h"
 #include "MyString.h"
 
 class SupermarketSystem
@@ -38,11 +39,21 @@ private:
 	Giftcard** giftcards = nullptr;
 	unsigned giftCount = 0;
 	unsigned giftCapacity = 0;
+
+	Transaction** transactions = nullptr;
+	unsigned tranCount = 0;
+	unsigned tranCapacity = 0;
+
+	Feed** feed = nullptr;
+	unsigned feedCount = 0;
+	unsigned feedCapacity = 0;
 	
 	void resizeUsers(unsigned newCap);
 	void resizeCategories(unsigned newCap);
 	void resizeProducts(unsigned newCap);
 	void resizeGiftcards(unsigned newCap);
+	void resizeTransactions(unsigned newCap);
+	void resizeFeed(unsigned newCap);
 
 public:
 	SupermarketSystem();
@@ -52,19 +63,21 @@ public:
 	void login(unsigned id, const MyString& password);
 	void logout();
 
-	struct Transaction;
-	unsigned nextTransactionId = 1;
+	const MyString& getCurrentDate() const;
 
 	void listUserData() const;
 	void listWorkers() const;
 	void listProducts() const;
 	void listProductsByCategory(const unsigned categoryId) const;
+	void listFeed() const;
+	void listTransactions() const;
 	void listWarnedCashiers(unsigned points) const;
 
 	void loadProducts(const MyString& fileName);
 	void loadGiftcards(const MyString& fileName);
 
 	void warnCashier(const MyString& name);
-	void writeReceipt(unsigned cashierId, const Transaction* item, size_t count, double totalSum);
 	void sell();
+	void addTransaction(Transaction* transaction);
+	void addFeed(const MyString& author, const MyString& description);
 };
