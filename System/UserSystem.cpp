@@ -150,3 +150,141 @@ void UserSystem::listWorkers(const SupermarketSystem& system)
 		std::cout << "------------" << std::endl;
 	}
 }
+
+void UserSystem::loadUsersFromFile(SupermarketSystem& system, const MyString& fileName)
+{
+	if (fileName == "")
+	{
+		std::cout << "Save file for users.txt corrupted or missing" << std::endl;
+		return;
+	}
+
+	std::ifstream ifs(fileName.c_str());
+	if (!ifs.is_open())
+	{
+		std::cout << "Cannot open users.txt" << std::endl;
+		return;
+	}
+
+	MyString role, fn, ln, phone, pass;
+	unsigned age;
+	int approved;
+
+	while (ifs >> role >> fn >> ln >> phone >> age >> pass >> approved)
+	{
+		if (ifs.fail())
+		{
+			ifs.clear();
+			char buff[Constants::MAX_BUFFER_SIZE];
+			std::cin.getline(buff, Constants::MAX_BUFFER_SIZE);
+			continue;
+		}
+
+		if (system.userCount >= system.userCapacity)
+		{
+			resizeUsers(system, system.userCount * 2);
+		}
+
+		if (role == "manager")
+		{
+			system.users[system.userCount++] = new Manager(fn, ln, phone, age, pass);
+		}
+		else if (role == "cashier")
+		{
+			Cashier* cashier = new Cashier(fn, ln, phone, age, pass);
+			if (approved)
+			{
+				cashier->setApproval();
+			}
+			system.users[system.userCount++] = cashier;
+		}
+	}
+	ifs.close();
+}
+
+void UserSystem::saveUsers(const SupermarketSystem& system, const MyString& fileName)
+{
+
+	if (fileName == "")
+	{
+		std::cout << "Save file for users.txt corrupted or missing" << std::endl;
+		return;
+	}
+
+	std::ofstream ofs(fileName.c_str());
+	if (!ofs.is_open())
+	{
+		std::cout << "Cannot open users.txt" << std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < system.userCount; i++)
+	{
+		if (Manager* manager = dynamic_cast<Manager*>(system.users[i]))
+		{
+			ofs << "manager " << manager->getFirstName().c_str() << " "
+				<< manager->getLastName().c_str() << " "
+				<< manager->getPhoneNumber().c_str() << " "
+				<< manager->getAge()<< " " << "1\n";
+		}
+		else if (Cashier* cashier = dynamic_cast<Cashier*>(system.users[i]))
+		{
+			ofs << "cashier " << cashier->getFirstName().c_str() << " "
+				<< cashier->getLastName().c_str() << " "
+				<< cashier->getPhoneNumber().c_str() << " "
+				<< cashier->getAge() << " "
+				<< cashier->checkIfApproved() << "\n";
+		}
+	}
+
+	ofs.close();
+}
+
+void UserSystem::saveCurrentUser(const SupermarketSystem& system, const MyString& fileName)
+{
+	if (!system.currentUser)
+	{
+		return;	
+	}
+
+
+	if (fileName == "")
+	{
+		std::cout << "Save file for currentUser.txt corrupted or missing" << std::endl;
+		return;
+	}
+
+	std::ofstream ofs(fileName.c_str());
+	if (!ofs.is_open())
+	{
+		std::cout << "Cannot open currentUser.txt" << std::endl;
+		return;
+	}
+
+	ofs << system.currentUser->getId() << "\n";
+
+	ofs.close();
+}
+
+void UserSystem::loadCurrentUser(SupermarketSystem& system, const MyString& fileName)
+{
+	if (fileName == "")
+	{
+		std::cout << "Save file for currentUser.txt corrupted or missing" << std::endl;
+		return;
+	}
+
+	std::ifstream ifs(fileName.c_str());
+	if (!ifs.is_open())
+	{
+		std::cout << "Cannot open currentUser.txt" << std::endl;
+		return;
+	}
+
+	unsigned id;
+	ifs >> id;
+	unsigned index = UserSystem::findUserIndex(system, id);
+	system.currentUser = system.users[index];
+
+	ifs.close();
+}

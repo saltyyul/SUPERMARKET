@@ -28,6 +28,13 @@ int main()
 {
 	std::cout << "Welcome to FMI Supermarket Management System 2024 - 2025!" << std::endl;
 	SupermarketSystem sys;
+	UserSystem::loadUsersFromFile(sys, "users.txt");
+
+	if (sys.userCount == 0)
+	{
+		UserSystem::registerUser(sys, MyString("manager"), MyString("Admin"), MyString("Admin"),
+			MyString("00000"), 26, MyString("admin"));
+	}
 
 	while (true)
 	{
@@ -156,4 +163,6 @@ int main()
 			std::cout << "Invalid command" << std::endl;
 		}
 	}
+
+	//saveUsers(sys, "users.txt");
 }
