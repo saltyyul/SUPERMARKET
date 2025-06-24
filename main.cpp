@@ -29,6 +29,7 @@ int main()
 	std::cout << "Welcome to FMI Supermarket Management System 2024 - 2025!" << std::endl;
 	SupermarketSystem sys;
 	UserSystem::loadUsersFromFile(sys, "users.txt");
+	UserSystem::loadCurrentUser(sys, "currentUser.txt");
 
 	if (sys.userCount == 0)
 	{
@@ -164,5 +165,6 @@ int main()
 		}
 	}
 
-	//saveUsers(sys, "users.txt");
+	UserSystem::saveUsers(sys, "users.txt");
+	UserSystem::saveCurrentUser(sys, "currentUser.txt");
 }

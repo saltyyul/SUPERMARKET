@@ -59,6 +59,7 @@ void UserSystem::login(SupermarketSystem& system, unsigned id, const MyString& p
 void UserSystem::logout(SupermarketSystem& system)
 {
 	system.currentUser = nullptr;
+	std::remove("current_user.txt");
 	std::cout << "You have logged out" << std::endl;
 }
 
