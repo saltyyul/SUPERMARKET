@@ -13,8 +13,8 @@ public:
 	Manager(const MyString& fn, const MyString& ln, const MyString& phoneNum,
 		const unsigned age, const MyString& pass);
 
-	const MyString& getSpecialCode() const;
-	const MyString& getRole() const;
+	MyString getSpecialCode() const;
+	MyString getRole() const;
 
 	void printInfo() const;
 };

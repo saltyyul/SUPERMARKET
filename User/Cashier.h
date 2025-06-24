@@ -27,7 +27,7 @@ public:
 
 	void printInfo() const override;
 
-	const MyString& getRole() const override;
+	MyString getRole() const override;
 	int getTransactionCount() const;
 	int getWarningPoints() const;
 	bool checkIfApproved() const;

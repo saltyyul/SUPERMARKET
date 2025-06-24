@@ -14,7 +14,7 @@ public:
 		return new SingleCategoryGiftcard(*this);
 	}
 
-	const MyString& getType() const override
+	MyString getType() const override
 	{
 		return "single";
 	}

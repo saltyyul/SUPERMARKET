@@ -42,7 +42,7 @@ const unsigned Product::getId() const
 {
 	return id;
 }
-const MyString& Product::getName() const
+MyString Product::getName() const
 {
 	return name;
 }

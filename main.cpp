@@ -57,7 +57,7 @@ int main()
 			unsigned id = atoi(tokens[1]);
 			UserSystem::login(sys, id, MyString(tokens[2]));
 		}
-		else if (strcmp(comm, "logout") && tokenCount == 1)
+		else if (strcmp(comm, "logout") == 0 && tokenCount == 1)
 		{
 			UserSystem::logout(sys);
 		}
@@ -110,7 +110,7 @@ int main()
 			unsigned cashierId = atoi(tokens[1]);
 			AdminSystem::declineCashier(sys, cashierId, MyString(tokens[2]));
 		}
-		else if (strcmp(comm, "list_warned") && tokenCount == 2)
+		else if (strcmp(comm, "list_warned") == 0 && tokenCount == 2)
 		{
 			unsigned points = atoi(tokens[1]);
 			AdminSystem::listWarnedCashiers(sys, points);

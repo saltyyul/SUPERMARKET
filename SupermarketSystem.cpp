@@ -27,7 +27,13 @@ SupermarketSystem::SupermarketSystem()
 
 SupermarketSystem:: ~SupermarketSystem()
 {
-	userCount = categoryCount = prodcutCount = 0;
+	userCount = categoryCount = prodcutCount = categoryCount = tranCount = feedCount = 0;
+	delete[] users;
+	delete[] categories;
+	delete[] products;
+	delete[] categories;
+	delete[] transactions;
+	delete[] feed;
 }
 
 

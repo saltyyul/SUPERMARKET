@@ -78,7 +78,7 @@ void Cashier::printInfo() const
 	}
 }
 
-const MyString& Cashier::getRole() const
+MyString Cashier::getRole() const
 {
 	return "cashier";
 }

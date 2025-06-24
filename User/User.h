@@ -26,17 +26,17 @@ public:
 	virtual ~User();
 
 	const unsigned getId() const;
-	const MyString& getFirstName() const;
-	const MyString& getLastName() const;
-	const MyString& getFullName() const;
-	const MyString& getPhoneNumber() const;
+	MyString getFirstName() const;
+	MyString getLastName() const;
+	MyString getFullName() const;
+    MyString getPhoneNumber() const;
 	const unsigned getAge() const;
-	const MyString& getPass() const;
+	MyString getPass() const;
 	
 	void setName(const MyString& fn, const MyString& ln);
 	void setAge(const unsigned age);
 	void setPhoneNumber(const MyString& phoneNum);
 	
 	virtual void printInfo() const;
-	virtual const MyString& getRole() const;
+	virtual MyString getRole() const;
 };

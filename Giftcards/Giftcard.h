@@ -15,8 +15,8 @@ public:
 	virtual ~Giftcard() = default;
 
 	virtual Giftcard* clone() const = 0;
-	virtual const MyString& getType() const = 0;
+	virtual MyString getType() const = 0;
 
-	const MyString& getCode() const { return code; }
+	MyString getCode() const { return code; }
 	double getDiscountValue() const { return discountValue; }
 };

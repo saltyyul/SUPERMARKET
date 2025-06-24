@@ -57,17 +57,17 @@ User::~User()
 
 const unsigned User::getId() const { return id; }
 
-const MyString& User::getFirstName() const { return firstName; }
+MyString User::getFirstName() const { return firstName; }
 
-const MyString& User::getLastName() const { return lastName; }
+MyString User::getLastName() const { return lastName; }
 
-const MyString& User::getFullName() const { return firstName + " " + lastName; }
+MyString User::getFullName() const { return firstName + " " + lastName; }
 
-const MyString& User::getPhoneNumber() const { return phoneNumber; }
+MyString User::getPhoneNumber() const { return phoneNumber; }
 
 const unsigned User::getAge() const { return age; }
 
-const MyString& User::getPass() const { return pass; }
+MyString User::getPass() const { return pass; }
 
 void User::setName(const MyString& fn, const MyString& ln)
 {
@@ -126,7 +126,7 @@ void User::printInfo() const
 		"\n Phone: " << phoneNumber << "\n";
 }
 
-const MyString& User::getRole() const
+MyString User::getRole() const
 {
 	return "Unknown";
 }

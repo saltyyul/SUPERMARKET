@@ -14,7 +14,7 @@ public:
 		return new MultipleCategoryGiftcard(*this);
 	}
 
-	const MyString& getType() const override
+	MyString getType() const override
 	{
 		return "multiple";
 	}

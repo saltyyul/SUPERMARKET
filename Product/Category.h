@@ -17,8 +17,8 @@ public:
 	Category(const MyString name, const MyString& description);
 
 	const unsigned getId() const;
-	const MyString& getName() const;
-	const MyString& getDescription() const;
+	MyString getName() const;
+	MyString getDescription() const;
 
  	void setName(const MyString& name);
 	void setDescription(const MyString& descrription);

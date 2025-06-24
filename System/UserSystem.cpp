@@ -29,6 +29,12 @@ int  UserSystem::findUserIndex(SupermarketSystem& system, unsigned id)
 
 void UserSystem::login(SupermarketSystem& system, unsigned id, const MyString& password)
 {
+
+	if (system.currentUser)
+	{
+		std::cout << "You are already logged in another account" << std::endl;
+		return;
+	}
 	
 	for (size_t i = 0; i < system.userCount; i++)
 	{
@@ -40,9 +46,10 @@ void UserSystem::login(SupermarketSystem& system, unsigned id, const MyString& p
 		if (id == system.users[i]->getId() && password == system.users[i]->getPass())
 		{
 			system.currentUser = system.users[i];
-			std::cout << "User " << system.currentUser->getFullName()
+			std::cout << "User " << system.currentUser->getFullName().c_str()
 				<< " with ID: " << system.currentUser->getId()
-				<< " has been logged into this system!" << std::endl;
+				<< " has been logged into the system!" << std::endl;
+			return;
 		}
 	}
 

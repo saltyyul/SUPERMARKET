@@ -50,12 +50,12 @@ Manager::Manager(const MyString& fn, const MyString& ln,
 	saveSpecialCode();
 }
 
-const MyString& Manager::getSpecialCode() const
+MyString Manager::getSpecialCode() const
 {
 	return specialCode;
 }
 
-const MyString& Manager::getRole() const
+MyString Manager::getRole() const
 {
 	return "manager";
 }

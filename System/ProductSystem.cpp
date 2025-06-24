@@ -285,6 +285,12 @@ void ProductSystem::addProduct(SupermarketSystem& system, const MyString& type)
 		return;
 	}
 
+	if (type != "unit" || type != "weight")
+	{
+		std::cout << "Invalid product type.\n";
+		return;
+	}
+
 	char input[Constants::MAX_BUFFER_SIZE];
 	MyString name, categoryName;
 	double price = 0;
@@ -332,12 +338,7 @@ void ProductSystem::addProduct(SupermarketSystem& system, const MyString& type)
 	{
 		newProduct = new ProductByWeight(name, price, system.categories[categoryIndex]->getId(), quantity);
 	}
-	else
-	{
-		std::cout << "Invalid product type.\n";
-		return;
-	}
-
+	
 	system.products[system.prodcutCount++] = newProduct;
 	std::cout << "Product " << newProduct->getName().c_str() << "added. \n";
 

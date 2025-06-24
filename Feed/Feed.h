@@ -40,9 +40,9 @@ public:
 
 	~Feed() = default;
 
-	const MyString& getAuthor() const { return author; }
-	const MyString& getDescription() const { return description; }
-	const MyString& getDate() const { return date; }
+	MyString getAuthor() const { return author; }
+	MyString getDescription() const { return description; }
+	MyString getDate() const { return date; }
 
 	void printFeedInfo() const
 	{

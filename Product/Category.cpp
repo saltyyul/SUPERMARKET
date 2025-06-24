@@ -24,11 +24,11 @@ const unsigned Category::getId() const
 {
 	return id;
 }
-const MyString& Category::getName() const
+ MyString Category::getName() const
 {
 	return name;
 }
-const MyString& Category::getDescription() const
+ MyString Category::getDescription() const
 {
 	return description;
 }

@@ -26,7 +26,7 @@ public:
 	virtual ~Product() = default;
 	
 	const unsigned getId() const;
-	const MyString& getName() const;
+	MyString getName() const;
 	const unsigned getCategoryId() const;
 	const double getPrice() const;
 

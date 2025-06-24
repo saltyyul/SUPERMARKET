@@ -14,7 +14,7 @@ public:
 		return new AllProductsGiftcard(*this);
 	}
 
-	const MyString& getType() const override
+	MyString getType() const override
 	{
 		return "all";
 	}
