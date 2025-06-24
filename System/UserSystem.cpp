@@ -29,8 +29,14 @@ int  UserSystem::findUserIndex(SupermarketSystem& system, unsigned id)
 
 void UserSystem::login(SupermarketSystem& system, unsigned id, const MyString& password)
 {
+	
 	for (size_t i = 0; i < system.userCount; i++)
 	{
+		if (!system.users[i])
+		{ 
+			continue;
+		}
+
 		if (id == system.users[i]->getId() && password == system.users[i]->getPass())
 		{
 			system.currentUser = system.users[i];
