@@ -39,7 +39,7 @@ void Cashier::resize(size_t newCap)
 
 Cashier::Cashier(const MyString& fn, const MyString& ln, const MyString& phoneNum,
 	const unsigned age, const MyString& pass)
-	:User(generateId(), fn, ln, phoneNum, age, pass)
+	:User(fn, ln, phoneNum, age, pass)
 {
 	approved = false;
 }

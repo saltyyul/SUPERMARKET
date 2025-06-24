@@ -42,9 +42,9 @@ void Manager::saveSpecialCode() const
 	ofs.close();
 }
 
-Manager::Manager( const MyString& fn, const MyString& ln,
+Manager::Manager(const MyString& fn, const MyString& ln,
 	const MyString& phoneNum, const unsigned age, const MyString& pass)
-	:User(generateId(), fn, ln, phoneNum, age, pass)
+	:User(fn, ln, phoneNum, age, pass)
 {
 	this->specialCode = generateSpecialCode();
 	saveSpecialCode();
