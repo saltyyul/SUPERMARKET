@@ -1,5 +1,7 @@
 #include "ProductSystem.h"
 
+#pragma warning (disable: 4996)
+
 void ProductSystem::resizeProducts(SupermarketSystem& system, unsigned newCap)
 {
 	Product** newProducts = new Product * [newCap] {};
@@ -113,7 +115,7 @@ void ProductSystem::loadProducts(SupermarketSystem& system, const MyString& file
 		return;
 	}
 
-	char buff[MAX_BUFFER_SIZE];
+	char buff[Constants::MAX_BUFFER_SIZE];
 	while (!ifs.eof())
 	{
 		ifs.getline(buff, sizeof(buff));
@@ -179,7 +181,7 @@ void ProductSystem::loadGiftcards(SupermarketSystem& system, const MyString& fil
 		return;
 	}
 
-	char buff[MAX_BUFFER_SIZE];
+	char buff[Constants::MAX_BUFFER_SIZE];
 	while (!ifs.eof())
 	{
 		ifs.getline(buff, sizeof(buff));
@@ -283,7 +285,7 @@ void ProductSystem::addProduct(SupermarketSystem& system, const MyString& type)
 		return;
 	}
 
-	char input[MAX_BUFFER_SIZE];
+	char input[Constants::MAX_BUFFER_SIZE];
 	MyString name, categoryName;
 	double price = 0;
 	double quantity = 0;

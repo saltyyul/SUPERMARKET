@@ -17,6 +17,7 @@
 #include "./Feed/Feed.h"
 #include "./Transaction/Transaction.h"
 #include "MyString.h"
+#include "./Constants.h"
 
 class SupermarketSystem
 {
@@ -31,27 +32,27 @@ public:
 
 	User** users = nullptr;
 	unsigned userCount = 0;
-	unsigned userCapacity = 0;
+	unsigned userCapacity = 8;
 
 	Category** categories = nullptr;
 	unsigned categoryCount = 0;
-	unsigned categoryCapacity = 0;
+	unsigned categoryCapacity = 8;
 
 	Product** products = nullptr;
 	unsigned prodcutCount = 0;
-	unsigned productCapacity = 0;
+	unsigned productCapacity = 8;
 
 	Giftcard** giftcards = nullptr;
 	unsigned giftCount = 0;
-	unsigned giftCapacity = 0;
+	unsigned giftCapacity = 8;
 
 	Transaction** transactions = nullptr;
 	unsigned tranCount = 0;
-	unsigned tranCapacity = 0;
+	unsigned tranCapacity = 8;
 
 	Feed** feed = nullptr;
 	unsigned feedCount = 0;
-	unsigned feedCapacity = 0;
+	unsigned feedCapacity = 8;
 
-	const MyString& getCurrentDate() const;
+	MyString getCurrentDate() const;
 };

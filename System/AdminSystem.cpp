@@ -142,7 +142,7 @@ void AdminSystem::warnCashier(SupermarketSystem& system, unsigned cashierId)
 	if (system.users[userIndex]->getRole() == "cashier")
 	{
 		std::cout << "Warning description: " << std::endl;
-		char input[MAX_BUFFER_SIZE];
+		char input[Constants::MAX_BUFFER_SIZE];
 		std::cin.ignore();
 		std::cin.getline(input, sizeof(input));
 

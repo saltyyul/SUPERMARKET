@@ -49,7 +49,7 @@ void TransactionSystem::sell(SupermarketSystem& system)
 	MyString date = system.getCurrentDate();
 	Transaction* transaction = new Transaction(system.currentUser->getId(), date);
 
-	char input[MAX_BUFFER_SIZE];
+	char input[Constants::MAX_BUFFER_SIZE];
 	while (true)
 	{
 		std::cout << "Enter product ID to sell. Enter END to end the transaction: " << std::endl;

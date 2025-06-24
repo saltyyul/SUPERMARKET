@@ -10,8 +10,8 @@ namespace UserSystem
 	void login(SupermarketSystem& system, unsigned id, const MyString& password);
 	void logout(SupermarketSystem& system);
 	void leave(SupermarketSystem& system);
-	void registerUser(SupermarketSystem& system, const char* input);
-
+	void registerUser(SupermarketSystem& system, const MyString& role, const MyString& fn,
+		const MyString& ln, const MyString& phone, unsigned age, const MyString& pass);
 	void listUserData(const SupermarketSystem& system);
 	void listWorkers(const SupermarketSystem& system);
 }

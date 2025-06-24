@@ -7,10 +7,18 @@ void MyString::copyFrom(const MyString& other)
 {
 	size = other.size;
 	capacity = other.capacity;
-	data = new char[capacity] {};
-	strcpy(data, other.data);
-}
+	data = new char[capacity];
 
+	if (other.data)
+	{
+		strcpy(data, other.data);
+	}
+	else
+	{
+		data[0] = '\0';
+	}
+}
+		
 void MyString::free()
 {
 	delete[] data;
@@ -21,11 +29,18 @@ void MyString::free()
 
 void MyString::resize(unsigned newCap)
 {
+	size_t len = strlen(data);
+
+	if (newCap < len) len = newCap;
+
 	char* newData = new char[newCap + 1] {};
 	strcpy(newData, data);
+	newData[len] = '\0';
+
 	delete[] data;
 	data = newData;
 	capacity = newCap;
+	size = len;
 }
 
 void MyString::moveFrom(MyString&& other)
@@ -43,19 +58,24 @@ MyString::MyString()
 {
 	data = new char[1];
 	data[0] = '\0';
+	size = 0;
+	capacity = 1;
 }
 
 MyString::MyString(const char* str)
 {
-	if (!data)
+	if (!str)
 	{
 		data = new char[1];
 		data[0] = '\0';
+		size = 0;
+		capacity = 1;
+		return;
 	}
-	
+
 	size = strlen(str);
-	capacity = size * 2;
-	data = new char[capacity] {};
+	capacity = size * 2 + 1;
+	data = new char[capacity];
 	strcpy(data, str);
 }
 

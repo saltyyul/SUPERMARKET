@@ -68,38 +68,14 @@ void UserSystem::leave(SupermarketSystem& system)
 	system.currentUser = nullptr;
 }
 
-void UserSystem::registerUser(SupermarketSystem& system, const char* input)
+void UserSystem::registerUser(SupermarketSystem& system, const MyString& role, const MyString& fn, const MyString& ln,
+	const MyString& phone, unsigned age, const MyString& pass)
 {
-	char line[MAX_BUFFER_SIZE];
-	strcpy(line, input);
-
-	char* comm = strtok(line, " ");
-	if (!comm || strcmp(comm, "register") != 0)
-	{
-		std::cout << "Invalid command" << std::endl;
-		return;
-	}
-
-	char* role = strtok(nullptr, " ");
-	char* fn = strtok(nullptr, " ");
-	char* ln = strtok(nullptr, " ");
-	char* phone = strtok(nullptr, " ");
-	char* ageStr = strtok(nullptr, " ");
-	char* pass = strtok(nullptr, " ");
-
-	if (!role || !fn || !ln || !phone || !ageStr || !pass)
-	{
-		std::cout << "Invalid arguments" << std::endl;
-		return;
-	}
-
-	unsigned age = atoi(ageStr);
-
 	User* newUser = nullptr;
-	if (strcmp(role, "manager") == 0)
+	if (role == "manager")
 	{
 		newUser = new Manager(MyString(fn), MyString(ln), MyString(phone), age, MyString(pass));
-
+		
 		if (system.userCount >= system.userCapacity)
 		{
 			resizeUsers(system, system.userCount * 2);
@@ -110,13 +86,11 @@ void UserSystem::registerUser(SupermarketSystem& system, const char* input)
 		Manager* manager = dynamic_cast<Manager*>(newUser);
 		std::cout << "Special code: " << manager->getSpecialCode().c_str() << std::endl;
 
-		MyString idStr;
-		idStr.to_string(manager->getId());
-		MyString fileName = idStr + "_special_code.txt";
+		MyString fileName = MyString(MyString::to_string(manager->getId())) + "_special_code.txt";
 		std::cout << "Code: " << fileName.c_str() << std::endl;
 		FeedSystem::addFeed(system, newUser->getFullName(), "Registered as a manager.");
 	}
-	else if (strcmp(role, "cashier") == 0)
+	else if (role == "cashier")
 	{
 		newUser = new Cashier(MyString(fn), MyString(ln), MyString(phone), age, MyString(pass));
 

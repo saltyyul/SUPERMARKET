@@ -3,13 +3,11 @@
 
 #pragma warning (disable: 4996)
 
-const unsigned MAX_BUFFER_SIZE = 256;
-
-const MyString& SupermarketSystem::getCurrentDate() const
+MyString SupermarketSystem::getCurrentDate() const
 {
 	time_t curr = time(0);
 	tm* localTime = localtime(&curr);
-	char dateBuff[MAX_BUFFER_SIZE];
+	char dateBuff[Constants::MAX_BUFFER_SIZE];
 	strftime(dateBuff, sizeof(dateBuff), "%Y-%m-%d %H:%M:%S", localTime);
 
 	return MyString(dateBuff);
@@ -22,6 +20,9 @@ SupermarketSystem::SupermarketSystem()
 	users = new User * [userCapacity];
 	categories = new Category * [categoryCapacity];
 	products = new Product * [productCapacity];
+	giftcards = new Giftcard * [giftCapacity];
+	transactions = new Transaction * [tranCapacity];
+	feed = new Feed * [feedCapacity];
 }
 
 SupermarketSystem:: ~SupermarketSystem()

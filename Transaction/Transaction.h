@@ -1,10 +1,9 @@
 #pragma once
 #include "../MyString.h"
 #include "../Product/Product.h"
+#include "../Constants.h"
 #include <iostream>
 #include <fstream>
-
-const size_t MAX_BUFFER_SIZE = 64;
 
 class Transaction
 {

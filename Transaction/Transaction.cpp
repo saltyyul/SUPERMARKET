@@ -1,5 +1,6 @@
 #include "Transaction.h"
 
+#pragma warning (disable: 4996)
 unsigned Transaction::nextId = 0;
 
 unsigned Transaction::generateId()
@@ -94,7 +95,7 @@ void Transaction::applyDiscount(double value)
 void Transaction::printReceipt() const
 {
 	const char* idStr = MyString::to_string(nextId);
-	char fileName[MAX_BUFFER_SIZE];
+	char fileName[Constants::MAX_BUFFER_SIZE];
 	strcpy(fileName, "receipt_");
 	strcat(fileName, idStr);
 	strcat(fileName, ".txt");
@@ -108,7 +109,7 @@ void Transaction::printReceipt() const
 
 	time_t curr = time(0);
 	tm* localTime = localtime(&curr);
-	char dateBuff[MAX_BUFFER_SIZE];
+	char dateBuff[Constants::MAX_BUFFER_SIZE];
 	strftime(dateBuff, sizeof(dateBuff), "%Y-%m-%d %H:%M:%S", localTime);
 	ofs << "RECEIPT \n";
 	ofs << "TRANSACTION_ID: " << nextId << "\n";

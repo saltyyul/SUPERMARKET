@@ -139,6 +139,7 @@
     <ClInclude Include="Product\ProductByWeight.h" />
     <ClInclude Include="SupermarketSystem.h" />
     <ClInclude Include="System\AdminSystem.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="System\FeedSystem.h" />
     <ClInclude Include="System\ProductSystem.h" />
     <ClInclude Include="System\TransactionSystem.h" />
