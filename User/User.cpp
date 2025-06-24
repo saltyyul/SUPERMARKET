@@ -25,7 +25,7 @@ void User::free()
 { 
 }
 
-User::User(const MyString& fn, const MyString& ln,
+User::User(unsigned id, const MyString& fn, const MyString& ln,
 	const MyString& phoneNum, const unsigned age, const MyString& pass)
 {
 	setName(fn, ln);

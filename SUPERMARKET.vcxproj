@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Feed.h" />
+    <ClInclude Include="Feed\Feed.h" />
     <ClInclude Include="Giftcards\AllProductsGiftcard.h" />
     <ClInclude Include="Giftcards\Giftcard.h" />
     <ClInclude Include="Giftcards\MultipleCategoryGiftcard.h" />
@@ -138,11 +138,16 @@
     <ClInclude Include="Product\ProductByUnit.h" />
     <ClInclude Include="Product\ProductByWeight.h" />
     <ClInclude Include="SupermarketSystem.h" />
-    <ClInclude Include="Transaction.h" />
+    <ClInclude Include="System\AdminSystem.h" />
+    <ClInclude Include="System\FeedSystem.h" />
+    <ClInclude Include="System\ProductSystem.h" />
+    <ClInclude Include="System\TransactionSystem.h" />
+    <ClInclude Include="System\UserSystem.h" />
+    <ClInclude Include="Transaction\Transaction.h" />
     <ClInclude Include="User\Cashier.h" />
     <ClInclude Include="User\Manager.h" />
     <ClInclude Include="User\User.h" />
-    <ClInclude Include="Warning.h" />
+    <ClInclude Include="User\Warning.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Product\Category.cpp" />
@@ -150,11 +155,16 @@
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="Product\Product.cpp" />
     <ClCompile Include="SupermarketSystem.cpp" />
-    <ClCompile Include="Transaction.cpp" />
+    <ClCompile Include="System\AdminSystem.cpp" />
+    <ClCompile Include="System\FeedSystem.cpp" />
+    <ClCompile Include="System\ProductSystem.cpp" />
+    <ClCompile Include="System\TransactionSystem.cpp" />
+    <ClCompile Include="System\UserSystem.cpp" />
+    <ClCompile Include="Transaction\Transaction.cpp" />
     <ClCompile Include="User\Cashier.cpp" />
     <ClCompile Include="User\Manager.cpp" />
     <ClCompile Include="User\User.cpp" />
-    <ClCompile Include="Warning.cpp" />
+    <ClCompile Include="User\Warning.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,5 @@
 #pragma once
-#include "MyString.h"
+#include "../MyString.h"
 #include <iostream>
 
 class Feed

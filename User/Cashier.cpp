@@ -1,5 +1,4 @@
 #include "Cashier.h"
-#include "../Warning.h"
 #include "../MyString.h"
 #include <iostream>
 

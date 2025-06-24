@@ -1,6 +1,6 @@
 #pragma once
-#include "MyString.h"
-#include "Product/Product.h"
+#include "../MyString.h"
+#include "../Product/Product.h"
 #include <iostream>
 #include <fstream>
 

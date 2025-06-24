@@ -1,6 +1,6 @@
 #pragma once
 #include "User.h"
-#include "../Warning.h"
+#include "Warning.h"
 
 class Cashier : public User
 {

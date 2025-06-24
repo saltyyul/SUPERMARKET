@@ -1,6 +1,6 @@
 #pragma once
-#include "MyString.h"
-#include "User/Manager.h"
+#include "../MyString.h"
+#include "Manager.h"
 
 class Warning
 {

@@ -33,7 +33,7 @@
     <ClInclude Include="Product\Product.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Warning.h">
+    <ClInclude Include="User\Warning.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Product\ProductByUnit.h">
@@ -57,10 +57,25 @@
     <ClInclude Include="Giftcards\AllProductsGiftcard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Feed.h">
+    <ClInclude Include="Feed\Feed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Transaction.h">
+    <ClInclude Include="Transaction\Transaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\UserSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\FeedSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ProductSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\TransactionSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="System\AdminSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,7 +92,7 @@
     <ClCompile Include="User\User.cpp">
       <Filter>Header Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Warning.cpp">
+    <ClCompile Include="User\Warning.cpp">
       <Filter>Header Files\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="User\Manager.cpp">
@@ -92,7 +107,22 @@
     <ClCompile Include="SupermarketSystem.cpp">
       <Filter>Header Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Transaction.cpp">
+    <ClCompile Include="Transaction\Transaction.cpp">
+      <Filter>Header Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System\UserSystem.cpp">
+      <Filter>Header Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System\FeedSystem.cpp">
+      <Filter>Header Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ProductSystem.cpp">
+      <Filter>Header Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System\TransactionSystem.cpp">
+      <Filter>Header Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="System\AdminSystem.cpp">
       <Filter>Header Files\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
