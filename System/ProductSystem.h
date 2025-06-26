@@ -14,6 +14,9 @@ namespace ProductSystem
 	void loadProducts(SupermarketSystem& system, const MyString& fileName);
 	void loadGiftcards(SupermarketSystem& system, const MyString& fileName);
 
+	void saveProducts(const SupermarketSystem& system, const MyString& fileName);
+	void saveGiftcards(const SupermarketSystem& system, const MyString& fileName);
+
 	void addCategory(SupermarketSystem& system, const MyString& name, const MyString& description);
 	void deleteCategory(SupermarketSystem& system, unsigned categoryId);
 	void addProduct(SupermarketSystem& system, const MyString& type);

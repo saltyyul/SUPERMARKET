@@ -8,7 +8,6 @@
 
 #pragma warning (disable: 4996)
 
-
 size_t splitIntoTokens(char* input, char* tokens[])
 {
 	size_t count = 0;
@@ -36,6 +35,18 @@ int main()
 		UserSystem::registerUser(sys, MyString("manager"), MyString("Admin"), MyString("Admin"),
 			MyString("00000"), 26, MyString("admin"));
 	}
+
+	// Brute forcing load products and giftcards since they were meant only for managers in the task requirements
+	User* previous = sys.currentUser;
+
+	sys.currentUser = sys.users[UserSystem::findUserIndex(sys, 100)];
+	ProductSystem::loadProducts(sys, "products.txt");
+	ProductSystem::loadGiftcards(sys, "giftcards.txt");
+
+	sys.currentUser = previous;
+
+	TransactionSystem::loadTransaction(sys, "transactions.txt");
+	FeedSystem::loadFeed(sys, "feed.txt");
 
 	while (true)
 	{
@@ -167,4 +178,8 @@ int main()
 
 	UserSystem::saveUsers(sys, "users.txt");
 	UserSystem::saveCurrentUser(sys, "currentUser.txt");
+	ProductSystem::saveProducts(sys, "products.txt");
+	ProductSystem::saveGiftcards(sys, "products.txt");
+	TransactionSystem::saveTransaction(sys, "products.txt");
+	FeedSystem::saveFeed(sys, "feed.txt");
 }

@@ -75,22 +75,28 @@ void ProductSystem::listProductsByCategory(const SupermarketSystem& system, cons
 
 	for (size_t i = 0; i < system.prodcutCount; i++)
 	{
+		if (!system.products[i])
+		{
+			continue;
+		}
 		if (system.products[i]->getCategoryId() == categoryId)
-
-		std::cout << "Id: " << system.products[i]->getId();
-		std::cout << "Name: " << system.products[i]->getName();
-		std::cout << "Category Id: " << system.products[i]->getCategoryId();
-
-		if (dynamic_cast<ProductByUnit*>(system.products[i]))
 		{
-			std::cout << "Price By Unit: " << system.products[i]->getPrice();
-		}
-		else if (dynamic_cast<ProductByWeight*>(system.products[i]))
-		{
-			std::cout << "Price By Weight: " << system.products[i]->getPrice();
-		}
+			std::cout << "Id: " << system.products[i]->getId();
+			std::cout << "Name: " << system.products[i]->getName();
+			std::cout << "Category Id: " << system.products[i]->getCategoryId();
 
-		std::cout << "Available quantity: " << system.products[i]->getQuantity();
+			if (dynamic_cast<ProductByUnit*>(system.products[i]))
+			{
+				std::cout << "Price By Unit: " << system.products[i]->getPrice();
+			}
+			else if (dynamic_cast<ProductByWeight*>(system.products[i]))
+			{
+				std::cout << "Price By Weight: " << system.products[i]->getPrice();
+			}
+
+			std::cout << "Available quantity: " << system.products[i]->getQuantity();
+		}
+		
 	}
 }
 
@@ -116,9 +122,8 @@ void ProductSystem::loadProducts(SupermarketSystem& system, const MyString& file
 	}
 
 	char buff[Constants::MAX_BUFFER_SIZE];
-	while (!ifs.eof())
+	while (ifs.getline(buff, sizeof(buff)))
 	{
-		ifs.getline(buff, sizeof(buff));
 		char* type = strtok(buff, ",");
 		char* name = strtok(nullptr, ",");
 		char* categoryStr = strtok(nullptr, ",");
@@ -182,9 +187,8 @@ void ProductSystem::loadGiftcards(SupermarketSystem& system, const MyString& fil
 	}
 
 	char buff[Constants::MAX_BUFFER_SIZE];
-	while (!ifs.eof())
+	while (ifs.getline(buff, sizeof(buff)))
 	{
-		ifs.getline(buff, sizeof(buff));
 		char* type = strtok(buff, ",");
 		char* code = strtok(nullptr, ",");
 		char* discountValueStr = strtok(nullptr, ",");
@@ -225,6 +229,82 @@ void ProductSystem::loadGiftcards(SupermarketSystem& system, const MyString& fil
 
 	FeedSystem::addFeed(system, system.currentUser->getFullName(), "Loaded new gift cards to the system.");
 }
+void ProductSystem::saveProducts(const SupermarketSystem& system, const MyString& fileName)
+{
+	if (fileName == "")
+	{
+		std::cout << "Save file for products.txt corrupted or missing" << std::endl;
+		return;
+	}
+	std::ofstream ofs(fileName.c_str());
+	if (!ofs.is_open())
+	{
+		std::cout << "Cannot open products.txt"<<std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < system.prodcutCount; i++)
+	{
+		Product* product = system.products[i];
+
+		const char* type = "none";
+		if (dynamic_cast<ProductByUnit*>(product)) 
+		{
+			type = "unit";
+		} 
+		else if (dynamic_cast<ProductByWeight*>(product))
+		{
+			type = "weight";
+		}
+
+		ofs << type << "," << product->getName().c_str() << ","
+			<< product->getCategoryId() << ","
+			<< product->getPrice() << ","
+			<< product->getQuantity() << "\n";
+	}
+
+	ofs.close();
+}
+void ProductSystem::saveGiftcards(const SupermarketSystem& system, const MyString& fileName)
+{
+	if (fileName == "")
+	{
+		std::cout << "Save file for giftcards.txt corrupted or missing" << std::endl;
+		return;
+	}
+	std::ofstream ofs(fileName.c_str());
+	if (!ofs.is_open())
+	{
+		std::cout << "Cannot open giftcards.txt"<<std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < system.giftCount; i++)
+	{
+		Giftcard* giftcard = system.giftcards[i];
+
+		const char* type = "none";
+		if (dynamic_cast<SingleCategoryGiftcard*>(giftcard))
+		{
+			type = "single";
+		}
+		else if (dynamic_cast<MultipleCategoryGiftcard*>(giftcard))
+		{
+			type = "multiple";
+		}
+		else if (dynamic_cast<AllProductsGiftcard*>(giftcard))
+		{
+			type = "all";
+		}
+
+		ofs << type << ","
+			<< giftcard->getCode() << ","
+			<< giftcard->getDiscountValue() << "\n";
+	}
+
+	ofs.close();
+}
+
 void ProductSystem::addCategory(SupermarketSystem& system, const MyString& name, const MyString& description)
 {
 	if (!system.currentUser || system.currentUser->getRole() != "manager")
@@ -332,11 +412,11 @@ void ProductSystem::addProduct(SupermarketSystem& system, const MyString& type)
 	Product* newProduct = nullptr;
 	if (type == "unit")
 	{
-		newProduct = new ProductByUnit(name, price, system.categories[categoryIndex]->getId(), quantity);
+		newProduct = new ProductByUnit(name, system.categories[categoryIndex]->getId(), price, quantity);
 	}
 	else if (type == "weight")
 	{
-		newProduct = new ProductByWeight(name, price, system.categories[categoryIndex]->getId(), quantity);
+		newProduct = new ProductByWeight(name, system.categories[categoryIndex]->getId(), price, quantity);
 	}
 	
 	system.products[system.prodcutCount++] = newProduct;

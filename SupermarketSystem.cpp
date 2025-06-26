@@ -27,13 +27,43 @@ SupermarketSystem::SupermarketSystem()
 
 SupermarketSystem:: ~SupermarketSystem()
 {
-	userCount = categoryCount = prodcutCount = categoryCount = tranCount = feedCount = 0;
-	delete[] users;
-	delete[] categories;
-	delete[] products;
-	delete[] categories;
-	delete[] transactions;
+	for (size_t i = 0; i < feedCount; i++)
+	{
+		delete feed[i];
+	}
 	delete[] feed;
+
+	for (size_t i = 0; i < tranCount; i++)
+	{
+		delete transactions[i];
+	}
+	delete[] transactions;
+
+	for (size_t i = 0; i < userCount; i++)
+	{
+		delete users[i];
+	}
+	delete[] users;
+
+	for (size_t i = 0; i < prodcutCount; i++)
+	{
+		delete products[i];
+	}
+	delete[] products;
+
+	for (size_t i = 0; i < giftCount; i++)
+	{
+		delete giftcards[i];
+	}
+	delete[] giftcards;
+
+	for (size_t i = 0; i < categoryCount; i++)
+	{
+		delete categories[i];
+	}
+	delete[] categories;
+
+	userCount = categoryCount = prodcutCount = categoryCount = tranCount = feedCount = 0;
 }
 
 

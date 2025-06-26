@@ -38,4 +38,11 @@ public:
 
 	void printReceipt() const;
 	void printInfo() const;
+
+	unsigned getCashierId() const;
+	MyString getDate() const;
+	unsigned getProductCount() const;
+	Product* getProduct(unsigned index) const;
+	double getQuantity(unsigned index) const;
+	double getTotal() const;
 };

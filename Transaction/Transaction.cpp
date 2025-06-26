@@ -135,3 +135,41 @@ void Transaction::printInfo() const
 	std::cout << "Total: " << total << std::endl;
 	std::cout << "Date: " << date.c_str() << std::endl;
 }
+
+unsigned Transaction::getCashierId() const
+{
+	return cashierId;
+}
+
+MyString Transaction::getDate() const
+{
+	return date;
+}
+
+unsigned Transaction::getProductCount() const
+{
+	return productCount;
+}
+
+Product* Transaction::getProduct(unsigned index) const
+{
+	if (index >= productCount)
+	{
+		return nullptr;
+	}
+	return products[index];
+}
+
+double Transaction::getQuantity(unsigned index) const
+{
+	if (index >= productCount)
+	{
+		return 0.0;
+	}
+	return quantities[index];
+}
+
+double Transaction::getTotal() const
+{
+	return total;
+}

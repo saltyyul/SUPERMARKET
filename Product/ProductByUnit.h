@@ -5,10 +5,10 @@
 class ProductByUnit : public Product 
 {
 private:
-	unsigned unitCount = 0;
+	double unitCount = 0;
 
 public:
-	ProductByUnit(const MyString& name, unsigned categoryId, const double price, unsigned unitCount)
+	ProductByUnit(const MyString& name, unsigned categoryId, const double price, double unitCount)
 		:Product(name, categoryId, price)
 	{
 		this->unitCount = unitCount;

@@ -123,3 +123,110 @@ void TransactionSystem::addTransaction(SupermarketSystem& system, Transaction* t
 	system.transactions[system.tranCount++] = transaction;
 }
 
+void TransactionSystem::loadTransaction(SupermarketSystem& system, const MyString& fileName)
+{
+	if (fileName == "")
+	{
+		std::cout << "Save file for transactions.txt corrupted or missing" << std::endl;
+		return;
+	}
+	std::ifstream ifs(fileName.c_str());
+	if (!ifs.is_open()) 
+	{
+		std::cout << "Cannot open transactions.txt"<<std::endl;
+		return;
+	}
+
+	char buff[Constants::MAX_BUFFER_SIZE];
+	Transaction* current = nullptr;
+	unsigned cashierId = 0;
+	MyString date = "";
+
+	while (ifs.getline(buff, sizeof(buff))) 
+	{
+		if (strcmp(buff, "start") == 0) 
+		{
+			cashierId = 0;
+			date = "";
+			current = nullptr;
+		}
+		else if (strncmp(buff, "cashierId,", 10) == 0)
+		{
+			cashierId = atoi(buff + 10);
+		}
+		else if (strncmp(buff, "date,", 5) == 0)
+		{
+			date = MyString(buff + 5);
+			current = new Transaction(cashierId, date);
+		}
+		else if (strncmp(buff, "product,", 8) == 0)
+		{
+			char* token = strtok(buff, ",");
+			char* idStr = strtok(nullptr, ","); 
+			char* quantityStr = strtok(nullptr, ",");
+
+			if (idStr && quantityStr && current)
+			{
+				unsigned productId = atoi(idStr);
+				double quantity = atof(quantityStr);
+
+				for (size_t i = 0; i < system.prodcutCount; i++)
+				{
+					if (system.products[i]->getId() == productId) 
+					{
+						current->addProduct(system.products[i], quantity);
+						break;
+					}
+				}
+			}
+		}
+		else if (strcmp(buff, "end") == 0) 
+		{
+			if (current) 
+			{
+				if (system.tranCount >= system.tranCapacity)
+				{
+					resizeTransactions(system, system.tranCount * 2);
+				}
+				system.transactions[system.tranCount++] = current;
+				current = nullptr;
+			}
+		}
+	}
+
+	ifs.close();
+}
+
+void TransactionSystem::saveTransaction(const SupermarketSystem& system, const MyString& fileName)
+{
+	if (fileName == "")
+	{
+		std::cout << "Save file for transactions.txt corrupted or missing" << std::endl;
+		return;
+	}
+	std::ofstream ofs(fileName.c_str());
+	if (!ofs.is_open()) {
+		std::cout << "Cannot open transactions.txt"<<std::endl;
+		return;
+	}
+
+	for (size_t i = 0; i < system.tranCount; i++) 
+	{
+		Transaction* transaction = system.transactions[i];
+
+		ofs << "start\n";
+		ofs << "cashierId," << transaction->getCashierId() << "\n";
+		ofs << "date," << transaction->getDate().c_str() << "\n";
+
+		for (size_t j = 0; j < transaction->getProductCount(); j++) {
+			ofs << "product," << transaction->getProduct(j)->getId()
+				<< "," << transaction->getQuantity(j) << "\n";
+		}
+
+		ofs << "total," << transaction->getTotal() << "\n";
+		ofs << "end\n";
+	}
+
+	ofs.close();
+}
+
