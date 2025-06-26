@@ -33,7 +33,7 @@ void TransactionSystem::listTransactions(const SupermarketSystem& system)
 
 void TransactionSystem::sell(SupermarketSystem& system)
 {
-	if (!system.currentUser || system.currentUser->getRole() != "Cashier")
+	if (!system.currentUser || system.currentUser->getRole() != "cashier")
 	{
 		std::cout << "You don't have access to this command." << std::endl;
 		return;
@@ -52,8 +52,9 @@ void TransactionSystem::sell(SupermarketSystem& system)
 	char input[Constants::MAX_BUFFER_SIZE];
 	while (true)
 	{
-		std::cout << "Enter product ID to sell. Enter END to end the transaction: " << std::endl;
+		std::cout << "Enter product ID to sell. Enter 'end' to end the transaction: " << std::endl;
 		std::cin >> input;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		if (strcmp(input, "end") == 0) break;
 		unsigned id = atoi(input);
@@ -87,10 +88,12 @@ void TransactionSystem::sell(SupermarketSystem& system)
 
 	std::cout << "Add voucher: (Y/N) ?" << std::endl;
 	std::cin >> input;
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	if (strcmp(input, "y") == 0)
 	{
 		std::cout << "Enter voucher:" << std::endl;
 		std::cin >> input;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		for (size_t i = 0; i < system.giftCount; i++)
 		{
@@ -133,7 +136,7 @@ void TransactionSystem::loadTransaction(SupermarketSystem& system, const MyStrin
 	std::ifstream ifs(fileName.c_str());
 	if (!ifs.is_open()) 
 	{
-		std::cout << "Cannot open transactions.txt"<<std::endl;
+		//std::cout << "Cannot open transactions.txt"<<std::endl;
 		return;
 	}
 

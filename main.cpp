@@ -86,6 +86,10 @@ int main()
 			UserSystem::registerUser(sys, MyString(tokens[1]), MyString(tokens[2]), MyString(tokens[3]),
 				MyString(tokens[4]), age, MyString(tokens[6]));
 		}
+		else if (strcmp(comm, "sell") == 0 && tokenCount == 1)
+		{
+			TransactionSystem::sell(sys);
+		}
 		else if (strcmp(comm, "list_user_data") == 0 && tokenCount == 1)
 		{
 			UserSystem::listUserData(sys);
@@ -134,6 +138,11 @@ int main()
 			unsigned points = atoi(tokens[1]);
 			AdminSystem::listWarnedCashiers(sys, points);
 		}
+		else if (strcmp(comm, "warn") == 0 && tokenCount == 2)
+		{
+			unsigned cashierId = atoi(tokens[1]);
+			AdminSystem::warnCashier(sys, cashierId);
+		}
 		else if (strcmp(comm, "promote") == 0 && tokenCount == 3)
 		{
 			unsigned cashierId = atoi(tokens[1]);
@@ -157,7 +166,7 @@ int main()
 		{
 			ProductSystem::addProduct(sys, MyString(tokens[1]));
 		}
-		else if (strcmp(comm, "delete_prodcut") == 0 && tokenCount == 2)
+		else if (strcmp(comm, "delete_product") == 0 && tokenCount == 2)
 		{
 			unsigned productId = atoi(tokens[1]);
 			ProductSystem::deleteProduct(sys, productId);

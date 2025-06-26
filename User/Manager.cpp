@@ -28,9 +28,7 @@ MyString Manager::generateSpecialCode() const
 
 void Manager::saveSpecialCode() const
 {
-	MyString idStr;
-	idStr.to_string(id);
-	MyString fileName = idStr + "_special_code.txt";
+	MyString fileName = MyString(MyString::to_string(id)) + "_special_code.txt";
 
 	std::ofstream ofs(fileName.c_str());
 	if (!ofs.is_open())

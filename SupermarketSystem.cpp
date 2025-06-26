@@ -15,7 +15,7 @@ MyString SupermarketSystem::getCurrentDate() const
 
 SupermarketSystem::SupermarketSystem()
 {
-	userCapacity = categoryCapacity = productCapacity = 8;
+	userCapacity = categoryCapacity = productCapacity = giftCapacity = tranCapacity = feedCapacity = 8;
 
 	users = new User * [userCapacity];
 	categories = new Category * [categoryCapacity];

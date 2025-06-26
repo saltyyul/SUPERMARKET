@@ -52,20 +52,21 @@ void ProductSystem::listProducts(const SupermarketSystem& system)
 
 	for (size_t i = 0; i < system.prodcutCount; i++)
 	{
-		std::cout << "Id: " << system.products[i]->getId();
-		std::cout << "Name: " << system.products[i]->getName();
-		std::cout << "Category Id: " << system.products[i]->getCategoryId();
+		std::cout << "Id: " << system.products[i]->getId() << " ";
+		std::cout << "Name: " << system.products[i]->getName() << " ";
+		std::cout << "Category Id: " << system.products[i]->getCategoryId() << " ";
 
 		if (dynamic_cast<ProductByUnit*>(system.products[i]))
 		{
-			std::cout << "Quantity: " << system.products[i]->getQuantity();
-			std::cout << "Price By Unit: " << system.products[i]->getPrice();
+			std::cout << "Quantity: " << system.products[i]->getQuantity() << " ";
+			std::cout << "Price By Unit: " << system.products[i]->getPrice() << " ";
 		}
 		else if (dynamic_cast<ProductByWeight*>(system.products[i]))
 		{
-			std::cout << "Quantity: " << system.products[i]->getQuantity();
-			std::cout << "Price By Weight: " << system.products[i]->getPrice();
+			std::cout << "Quantity: " << system.products[i]->getQuantity() << " ";
+			std::cout << "Price By Weight: " << system.products[i]->getPrice() << " ";
 		}
+		std::cout << std::endl;
 	}
 }
 
@@ -81,22 +82,22 @@ void ProductSystem::listProductsByCategory(const SupermarketSystem& system, cons
 		}
 		if (system.products[i]->getCategoryId() == categoryId)
 		{
-			std::cout << "Id: " << system.products[i]->getId();
-			std::cout << "Name: " << system.products[i]->getName();
-			std::cout << "Category Id: " << system.products[i]->getCategoryId();
+			std::cout << "Id: " << system.products[i]->getId() << " ";
+			std::cout << "Name: " << system.products[i]->getName() << " ";
+			std::cout << "Category Id: " << system.products[i]->getCategoryId() << " ";
 
 			if (dynamic_cast<ProductByUnit*>(system.products[i]))
 			{
-				std::cout << "Price By Unit: " << system.products[i]->getPrice();
+				std::cout << "Price By Unit: " << system.products[i]->getPrice() << " ";
 			}
 			else if (dynamic_cast<ProductByWeight*>(system.products[i]))
 			{
-				std::cout << "Price By Weight: " << system.products[i]->getPrice();
+				std::cout << "Price By Weight: " << system.products[i]->getPrice() << " ";
 			}
 
-			std::cout << "Available quantity: " << system.products[i]->getQuantity();
+			std::cout << "Available quantity: " << system.products[i]->getQuantity() << " ";
 		}
-		
+		std::cout << std::endl;
 	}
 }
 
@@ -110,14 +111,14 @@ void ProductSystem::loadProducts(SupermarketSystem& system, const MyString& file
 
 	if (fileName == "")
 	{
-		std::cout << "Invalid file name" << std::endl;
+		//std::cout << "Invalid file name" << std::endl;
 		return;
 	}
 
 	std::ifstream ifs(fileName.c_str());
 	if (!ifs.is_open())
 	{
-		std::cout << "Cannot open file!" << std::endl;
+		//std::cout << "Cannot open file!" << std::endl;
 		return;
 	}
 
@@ -182,7 +183,7 @@ void ProductSystem::loadGiftcards(SupermarketSystem& system, const MyString& fil
 	std::ifstream ifs(fileName.c_str());
 	if (!ifs.is_open())
 	{
-		std::cout << "Cannot open file!" << std::endl;
+		//std::cout << "Cannot open file!" << std::endl;
 		return;
 	}
 
@@ -361,13 +362,13 @@ void ProductSystem::addProduct(SupermarketSystem& system, const MyString& type)
 {
 	if (!system.currentUser || system.currentUser->getRole() != "manager")
 	{
-		std::cout << "You don't have access to this command." << std::endl;
+		std::cout << "You don't have access to this command" << std::endl;
 		return;
 	}
 
-	if (type != "unit" || type != "weight")
+	if (type != "unit" && type != "weight")
 	{
-		std::cout << "Invalid product type.\n";
+		std::cout << "Invalid product type" <<std::endl;
 		return;
 	}
 
@@ -384,26 +385,29 @@ void ProductSystem::addProduct(SupermarketSystem& system, const MyString& type)
 	std::cin >> input;
 	categoryName = input;
 
-	unsigned categoryIndex = -1;
+	int categoryIndex = -1;
 	for (size_t i = 0; i < system.categoryCount; i++)
 	{
 		if (system.categories[i]->getName() == categoryName)
 		{
 			categoryIndex = i;
+			break;
 		}
 	}
 
-	if (categoryIndex <= 0)
+	if (categoryIndex == -1)
 	{
 		std::cout << "Invalid category" << std::endl;
 		return;
 	}
 
-	std::cout << "Enter price: \n";
+	std::cout << "Enter price: ";
 	std::cin >> price;
 
-	std::cout << "Enter quantity: \n";
+	std::cout << "Enter quantity: ";
 	std::cin >> quantity;
+
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	if (system.prodcutCount >= system.productCapacity) {
 		resizeProducts(system, system.prodcutCount * 2);
@@ -420,7 +424,7 @@ void ProductSystem::addProduct(SupermarketSystem& system, const MyString& type)
 	}
 	
 	system.products[system.prodcutCount++] = newProduct;
-	std::cout << "Product " << newProduct->getName().c_str() << "added. \n";
+	std::cout << "Product " << newProduct->getName().c_str() << " added. \n";
 
 	FeedSystem::addFeed(system, system.currentUser->getFullName(), "Added new product: " + name);
 }

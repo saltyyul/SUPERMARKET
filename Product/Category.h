@@ -14,11 +14,11 @@ private:
 public:
 	Category();
 
-	Category(const MyString name, const MyString& description);
+	Category(const MyString& name, const MyString& description);
 
 	const unsigned getId() const;
-	MyString getName() const;
-	MyString getDescription() const;
+	const MyString& getName() const;
+	const MyString& getDescription() const;
 
  	void setName(const MyString& name);
 	void setDescription(const MyString& descrription);

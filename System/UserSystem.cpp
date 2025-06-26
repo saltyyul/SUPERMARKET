@@ -95,6 +95,11 @@ void UserSystem::registerUser(SupermarketSystem& system, const MyString& role, c
 			resizeUsers(system, system.userCount * 2);
 		}
 		system.users[system.userCount++] = newUser;
+
+		if (newUser->getFirstName() == "Admin")
+		{
+			return;
+		}
 		std::cout << "Manager registered successfully!" << std::endl;
 
 		Manager* manager = dynamic_cast<Manager*>(newUser);
@@ -163,7 +168,7 @@ void UserSystem::loadUsersFromFile(SupermarketSystem& system, const MyString& fi
 	std::ifstream ifs(fileName.c_str());
 	if (!ifs.is_open())
 	{
-		std::cout << "Cannot open users.txt" << std::endl;
+		//std::cout << "Cannot open users.txt" << std::endl;
 		return;
 	}
 
@@ -278,7 +283,7 @@ void UserSystem::loadCurrentUser(SupermarketSystem& system, const MyString& file
 	std::ifstream ifs(fileName.c_str());
 	if (!ifs.is_open())
 	{
-		std::cout << "Cannot open currentUser.txt" << std::endl;
+		//std::cout << "Cannot open currentUser.txt" << std::endl;
 		return;
 	}
 

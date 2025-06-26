@@ -51,7 +51,7 @@ void FeedSystem::loadFeed(SupermarketSystem& system, const MyString& fileName)
 	std::ifstream ifs(fileName.c_str());
 	if (!ifs.is_open())
 	{
-		std::cout << "Cannot open feed.txt" << std::endl;
+		//std::cout << "Cannot open feed.txt" << std::endl;
 		return;
 	}
 

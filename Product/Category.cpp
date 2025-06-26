@@ -13,7 +13,7 @@ Category::Category()
 
 }
 
-Category::Category(const MyString name, const MyString& description)
+Category::Category(const MyString& name, const MyString& description)
 {
 	id = generateId();
 	setName(name);
@@ -24,11 +24,11 @@ const unsigned Category::getId() const
 {
 	return id;
 }
- MyString Category::getName() const
+ const MyString& Category::getName() const
 {
 	return name;
 }
- MyString Category::getDescription() const
+ const MyString& Category::getDescription() const
 {
 	return description;
 }
@@ -43,7 +43,7 @@ void Category::setName(const MyString& name)
 	this->name = name;
 }
 
-void Category::setDescription(const MyString& descrription)
+void Category::setDescription(const MyString& description)
 {
 	if (description == "" || this->description == description)
 	{
